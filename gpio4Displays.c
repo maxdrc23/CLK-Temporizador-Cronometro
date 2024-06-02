@@ -45,6 +45,17 @@
 #define	SEVEN_SEGS_SEVEN	(SEGA | SEGB | SEGC | SEGG)
 #define	SEVEN_SEGS_EIGHT	(SEGA | SEGB | SEGC | SEGD | SEGE | SEGF | SEGG)
 #define	SEVEN_SEGS_NINE		(SEGA | SEGB | SEGC | SEGD | SEGF | SEGG)
+
+#define SEVEN_SEGS_ZERO_S	SEVEN_SEGS_ZERO | SEGDEC
+#define SEVEN_SEGS_ONE_S	SEVEN_SEGS_ONE | SEGDEC
+#define SEVEN_SEGS_TWO_S	SEVEN_SEGS_TWO | SEGDEC
+#define SEVEN_SEGS_THREE_S	SEVEN_SEGS_THREE | SEGDEC
+#define SEVEN_SEGS_FOUR_S	SEVEN_SEGS_FOUR | SEGDEC
+#define SEVEN_SEGS_FIVE_S	SEVEN_SEGS_FIVE | SEGDEC
+#define SEVEN_SEGS_SIX_S	SEVEN_SEGS_SIX | SEGDEC
+#define SEVEN_SEGS_SEVEN_S	SEVEN_SEGS_SEVEN | SEGDEC
+#define SEVEN_SEGS_EIGHT_S	SEVEN_SEGS_EIGHT | SEGDEC
+#define SEVEN_SEGS_NINE_S	SEVEN_SEGS_NINE | SEGDEC
 /*******************************************************************************
  * Local Function Prototypes
  ******************************************************************************/
@@ -64,7 +75,7 @@ static const uint32_t bDisplayDriver[] =
 #define TOTAL_DISPLAYS	(sizeof(bDisplayDriver)/sizeof(bDisplayDriver[0]))
 
 
-static const uint8_t bBCD7Segs[] =
+static const uint16_t bBCD7Segs[] =
 {
 	SEVEN_SEGS_ZERO,	// 0
 	SEVEN_SEGS_ONE,		// 1
@@ -75,7 +86,17 @@ static const uint8_t bBCD7Segs[] =
 	SEVEN_SEGS_SIX,		// 6
 	SEVEN_SEGS_SEVEN,	// 7
 	SEVEN_SEGS_EIGHT,	// 8
-	SEVEN_SEGS_NINE	// 9
+	SEVEN_SEGS_NINE,	// 9
+	SEVEN_SEGS_ZERO_S, 	//0.
+	SEVEN_SEGS_ONE_S, 	//1.
+	SEVEN_SEGS_TWO_S,	//2.
+	SEVEN_SEGS_THREE_S,	//3.
+	SEVEN_SEGS_FOUR_S,	//4.
+	SEVEN_SEGS_FIVE_S,	//5.
+	SEVEN_SEGS_SIX_S,	//6.
+	SEVEN_SEGS_SEVEN_S,	//7.
+	SEVEN_SEGS_EIGHT_S,	//8.
+	SEVEN_SEGS_NINE_S	//9.
 };
 
 static uint8_t bDisplayIdx = 0;
@@ -162,8 +183,15 @@ void vfnClk()
 	static uint8_t bHra = 0;
 	static uint8_t bMin = 0;
 	static uint8_t bSeg = 0;
+	static uint8_t bHlfSeg = 0;
 
-	bSeg++;
+	bHlfSeg++;
+
+	if(bHlfSeg == 2)
+	{
+		bHlfSeg = 0;
+		bSeg++;
+	}
 
 	if(bSeg == 60)
 	{
@@ -182,7 +210,12 @@ void vfnClk()
 		bHra=0;
 	}
 
-	vfnDisplay_Value((bHra/10),(bHra%10), (bMin/10), (bMin%10));
+	if(bHlfSeg==1)
+	{
+		vfnDisplay_Value((bHra/10),(bHra%10), (bMin/10), (bMin%10));
+	}
+	else
+	{
+		vfnDisplay_Value((bHra/10),(bHra%10), (bMin/10), (bMin%10)+10);
+	}
 }
-
-
