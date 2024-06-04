@@ -34,12 +34,14 @@ int main(void)
 	volatile uint32_t wDelay = DELAY;
 	volatile uint32_t wDelayClk = DELAY_CLK;
 
-	uint8_t bSwitch = bfnSwitch();
+	uint8_t bSwitch = 0;
 
 	vfnInitGpios();
 
     while (1)
     {
+	uint8_t bSwitch = bfnSwitch();
+	    
     	if(!wDelay--)
     	{
     		vfnColumns_Driver();
