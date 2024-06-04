@@ -56,6 +56,18 @@
 #define SEVEN_SEGS_SEVEN_S	SEVEN_SEGS_SEVEN | SEGDEC
 #define SEVEN_SEGS_EIGHT_S	SEVEN_SEGS_EIGHT | SEGDEC
 #define SEVEN_SEGS_NINE_S	SEVEN_SEGS_NINE | SEGDEC
+
+#define CLK_DIGITS	4
+#define HRA_D		0
+#define HRA_U		1
+#define	MIN_D		2
+#define MIN_U		3
+#define SEG			4
+
+#define CLK_MODE	0x1
+#define CHRONO_MODE	0x2
+#define TEMPO_MODE	0x4
+#define SETUP_MODE	0x8
 /*******************************************************************************
  * Local Function Prototypes
  ******************************************************************************/
@@ -170,20 +182,42 @@ void vfnColumns_Driver()
     \return	none
     \brief	Assign value
 */
-void vfnDisplay_Value(uint8_t bHra_d, uint8_t bHra_u, uint8_t bMin_d, uint8_t bMin_u)
+void vfnDisplay_Value(uint8_t bSwitch, uint8_t* bpClkDigits)
 {
-	gbaDisplayData[0] = bHra_d;
-	gbaDisplayData[1] = bHra_u;
-	gbaDisplayData[2] = bMin_d;
-	gbaDisplayData[3] = bMin_u;
+	if(bSwitch==CLK_MODE)
+	{
+		gbaDisplayData[0] = (*bpClkDigits);
+		bpClkDigits++;
+		gbaDisplayData[1] = *bpClkDigits;
+		bpClkDigits++;
+		gbaDisplayData[2] = *bpClkDigits;
+		bpClkDigits++;
+		gbaDisplayData[3] = *bpClkDigits;
+	}
+	else if(bSwitch==CHRONO_MODE)
+	{
+
+	}
+	else if(bSwitch==TEMPO_MODE)
+	{
+
+	}
+	else if(bSwitch==SETUP_MODE)
+	{
+
+	}
 }
 
-void vfnClk()
+uint8_t* bpfnClk()
 {
 	static uint8_t bHra = 0;
 	static uint8_t bMin = 0;
 	static uint8_t bSeg = 0;
 	static uint8_t bHlfSeg = 0;
+
+	//Array to store digit values
+	static uint8_t bClkDigits[CLK_DIGITS] = {0};
+
 
 	bHlfSeg++;
 
@@ -212,10 +246,20 @@ void vfnClk()
 
 	if(bHlfSeg==1)
 	{
-		vfnDisplay_Value((bHra/10),(bHra%10), (bMin/10), (bMin%10));
+		//vfnDisplay_Value((bHra/10),(bHra%10), (bMin/10), (bMin%10));
+		bClkDigits[HRA_D] = bHra/10;
+		bClkDigits[HRA_U] = bHra%10;
+		bClkDigits[MIN_D] = bMin/10;
+		bClkDigits[MIN_U] = bMin%10;
 	}
 	else
 	{
-		vfnDisplay_Value((bHra/10),(bHra%10), (bMin/10), (bMin%10)+10);
+		//vfnDisplay_Value((bHra/10),(bHra%10), (bMin/10), (bMin%10)+10);
+		bClkDigits[HRA_D] = bHra/10;
+		bClkDigits[HRA_U] = bHra%10;
+		bClkDigits[MIN_D] = bMin/10;
+		bClkDigits[MIN_U] = (bMin%10)+10;
 	}
+
+	return &bClkDigits[0];
 }
