@@ -37,8 +37,9 @@ void vfnGREEN_On();
 void vfnRED_On();
 void vfnBLUE_On();
 void vfnColumns_Driver();
-void vfnDisplay_Value(uint8_t bHra_d, uint8_t bHra_u, uint8_t bMin_d, uint8_t bMin_u);
-void vfnClk();
+void vfnDisplay_Value(uint8_t bSwitch,uint8_t* bpClkDigits);
+//void vfnClk();
+uint8_t* bpfnClk();
 /*******************************************************************************
  * Local Variables
  ******************************************************************************/
