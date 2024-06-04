@@ -14,7 +14,7 @@
  * Definitions
  ******************************************************************************/
 #define DELAY		0x3000
-#define DELAY_CLK	0xFFFA
+#define DELAY_CLK	0xFFFF3
 
 /*******************************************************************************
  * Prototypes
@@ -27,10 +27,14 @@
  * @brief Main function
  */
 
+uint8_t* bpClkDigits;
+
 int main(void)
 {
 	volatile uint32_t wDelay = DELAY;
 	volatile uint32_t wDelayClk = DELAY_CLK;
+
+	uint8_t bSwitch = bfnSwitch();
 
 	vfnInitGpios();
 
@@ -39,13 +43,14 @@ int main(void)
     	if(!wDelay--)
     	{
     		vfnColumns_Driver();
-    		//vfnDisplay_Value();
+    		vfnDisplay_Value(bSwitch,bpClkDigits);
     		wDelay = DELAY;
     	}
     	if(!wDelayClk--)
     	{
     		//vfnDisplay_Value();
-    		vfnClk();
+    		//vfnClk();
+    		bpClkDigits = bpfnClk();
 			wDelayClk = DELAY_CLK;
     	}
     }
